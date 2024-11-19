@@ -1,8 +1,9 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Tarefa } from 'src/tarefa/tarefa.entity';
+import { Evento } from 'src/evento/evento.entity';
 
 @Entity('morador')
 export class Morador {
-  
   @PrimaryGeneratedColumn({ name: "morador_id" })
   id: number;
 
@@ -29,4 +30,10 @@ export class Morador {
 
   @Column()
   telefone: string;
+
+  @ManyToMany(() => Tarefa, (tarefa) => tarefa.moradores_associados)
+  tarefas: Tarefa[];
+
+  @ManyToMany(() => Evento, (evento) => evento.participantes)
+  eventos: Evento[];
 }
