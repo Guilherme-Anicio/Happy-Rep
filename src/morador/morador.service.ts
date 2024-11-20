@@ -1,6 +1,7 @@
 import { Inject, Injectable, BadRequestException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Morador } from 'src/morador/morador.entity';
+import { validateEntity } from 'src/utils/validation.util';
 
 @Injectable()
 export class MoradorService {
@@ -31,15 +32,7 @@ export class MoradorService {
 
     this.validateAndFormatMorador(morador)
 
-    existingMorador.nome = morador.nome;
-    existingMorador.apelido = morador.apelido;
-    existingMorador.periodo = morador.periodo;
-    existingMorador.curso = morador.curso;
-    existingMorador.turno_curso = morador.turno_curso;
-    existingMorador.cidade_de_origem = morador.cidade_de_origem;
-    existingMorador.email = morador.email;
-    existingMorador.telefone = morador.telefone;
-
+    Object.assign(existingMorador, morador);
     return this.repository.save(existingMorador);
   }
 
@@ -51,21 +44,19 @@ export class MoradorService {
   }
 
   private validateAndFormatMorador(morador: Morador): void {
-    this.validateNome(morador.nome);
-    this.validateApelido(morador.apelido);
-    this.validatePeriodo(morador.periodo);
-    this.validateCurso(morador.curso);
-    this.validateCidadeDeOrigem(morador.cidade_de_origem);
-    this.validateEmail(morador.email);
-
-    if (morador.turno_curso) {
-      this.formatTurnoCurso(morador);
-    }
-
-    if (morador.telefone) {
-      this.validateAndFormatTelefone(morador);
-    }
+    const moradorValidators: Record<string, (value: any) => void> = {
+      nome: this.validateNome.bind(this),
+      apelido: this.validateApelido.bind(this),
+      periodo: this.validatePeriodo.bind(this),
+      curso: this.validateCurso.bind(this),
+      cidade_de_origem: this.validateCidadeDeOrigem.bind(this),
+      email: this.validateEmail.bind(this),
+      telefone: this.validateAndFormatTelefone.bind(this),
+    };
+  
+    validateEntity(morador, moradorValidators);
   }
+  
 
   private validateAndFormatTelefone(morador: Morador): void {
     const regex = /^\d{11}$/;
@@ -78,17 +69,6 @@ export class MoradorService {
     }
 
     morador.telefone = `(${morador.telefone.slice(0, 2)}) ${morador.telefone.slice(2, 7)}-${morador.telefone.slice(7)}`;
-  }
-
-  private formatTurnoCurso(morador: Morador): void {
-    const validOptions = ['Integral', 'Noturno'];
-    const formattedTurno = morador.turno_curso.charAt(0).toUpperCase() + morador.turno_curso.slice(1).toLowerCase();
-
-    if (!validOptions.includes(formattedTurno)) {
-      throw new BadRequestException('Turno do curso deve ser "Integral" ou "Noturno".');
-    }
-
-    morador.turno_curso = formattedTurno;
   }
 
   private validateNome(nome: string): void {

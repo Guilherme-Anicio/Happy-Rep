@@ -1,6 +1,7 @@
-import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Tarefa } from 'src/tarefa/tarefa.entity';
 import { Evento } from 'src/evento/evento.entity';
+import { Transacao } from 'src/transacao/transacao.entity';
 
 @Entity('morador')
 export class Morador {
@@ -19,8 +20,8 @@ export class Morador {
   @Column()
   curso: string;
 
-  @Column()
-  turno_curso: string;
+  @Column({ type: 'enum', enum: ['Integral', 'Noturno'] })
+  turno_curso: 'Integral' | 'Noturno';
 
   @Column()
   cidade_de_origem: string;
@@ -36,4 +37,13 @@ export class Morador {
 
   @ManyToMany(() => Evento, (evento) => evento.participantes)
   eventos: Evento[];
+
+  @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
+  saldo: number;
+
+  @OneToMany(() => Transacao, (transacao) => transacao.morador)
+  transacoes: Transacao[];
+
+  /*@ManyToMany(() => Gasto, (gasto) => gasto.participantes)
+  gastos: Gasto[];*/
 }

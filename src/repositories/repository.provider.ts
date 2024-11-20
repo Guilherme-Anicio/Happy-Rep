@@ -2,6 +2,7 @@ import { DataSource } from 'typeorm';
 import { Morador } from '../morador/morador.entity';
 import { Tarefa } from '../tarefa/tarefa.entity';
 import { Evento } from '../evento/evento.entity';
+import { Transacao } from 'src/transacao/transacao.entity';
 
 export const repositoryProvider = [
   {
@@ -17,6 +18,11 @@ export const repositoryProvider = [
   {
     provide: 'EVENTO_REPOSITORY',
     useFactory: (dataSource: DataSource) => dataSource.getRepository(Evento),
+    inject: ['MYSQL_DATA_SOURCE'],
+  },
+  {
+    provide: 'TRANSACAO_REPOSITORY',
+    useFactory: (dataSource: DataSource) => dataSource.getRepository(Transacao),
     inject: ['MYSQL_DATA_SOURCE'],
   },
 ];

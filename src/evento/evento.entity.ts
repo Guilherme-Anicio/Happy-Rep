@@ -18,8 +18,8 @@ export class Evento {
   @Column({ name: 'hora', type: 'time' })
   hora: string;
 
-  @Column()
-  valor: string;
+  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  valor: number;
 
   @ManyToMany(() => Morador, (morador) => morador.eventos)
   @JoinTable()
