@@ -1,15 +1,24 @@
-import { Column, Entity, ManyToMany, PrimaryGeneratedColumn, JoinTable } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToMany,
+  PrimaryGeneratedColumn,
+  JoinTable,
+} from 'typeorm';
 import { Morador } from 'src/morador/morador.entity';
+import { Length } from 'class-validator';
 
 @Entity('evento')
 export class Evento {
-  @PrimaryGeneratedColumn({ name: "evento_id" })
+  @PrimaryGeneratedColumn({ name: 'evento_id' })
   id: number;
 
   @Column()
+  @Length(3, 100)
   nome: string;
 
   @Column()
+  @Length(3, 100)
   descricao: string;
 
   @Column({ name: 'data', type: 'date' })

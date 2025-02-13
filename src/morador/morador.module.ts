@@ -4,9 +4,9 @@ import { MoradorService } from './morador.service';
 import { DatabaseModule } from 'src/repositories/database.module';
 
 @Module({
-    imports : [DatabaseModule],
-    controllers: [MoradorController],
-    providers: [MoradorService],
-    exports: [MoradorService],
+  imports: [DatabaseModule],
+  controllers: [MoradorController],
+  providers: [MoradorService],
+  exports: [MoradorService],
 })
 export class MoradorModule {}

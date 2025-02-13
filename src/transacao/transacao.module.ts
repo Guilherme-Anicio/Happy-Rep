@@ -4,9 +4,9 @@ import { TransacaoService } from './transacao.service';
 import { DatabaseModule } from 'src/repositories/database.module';
 
 @Module({
-    imports : [DatabaseModule],
-    controllers: [TransacaoController],
-    providers: [TransacaoService],
-    exports: [TransacaoService],
+  imports: [DatabaseModule],
+  controllers: [TransacaoController],
+  providers: [TransacaoService],
+  exports: [TransacaoService],
 })
 export class TransacaoModule {}

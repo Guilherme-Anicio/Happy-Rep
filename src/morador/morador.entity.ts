@@ -1,36 +1,48 @@
-import { Column, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToMany,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Tarefa } from 'src/tarefa/tarefa.entity';
 import { Evento } from 'src/evento/evento.entity';
 import { Transacao } from 'src/transacao/transacao.entity';
+import { Usuario } from 'src/usuario/usuario.entity';
+import { Length, Matches } from 'class-validator';
 
 @Entity('morador')
 export class Morador {
-  @PrimaryGeneratedColumn({ name: "morador_id" })
+  @PrimaryGeneratedColumn({ name: 'morador_id' })
   id: number;
 
-  @Column()
-  nome: string;
+  @OneToOne(() => Usuario)
+  @JoinColumn({ name: 'usuario_id' })
+  usuario: Usuario;
 
   @Column()
+  @Length(3, 50)
   apelido: string;
 
   @Column()
+  @Matches(/^\d{4}\/\d{1,2}$/, {
+    message:
+      'Período deve seguir o formato: 4 números, uma barra (/) e até 2 números (ex: 2024/1).',
+  })
   periodo: string;
 
   @Column()
+  @Length(3, 100)
   curso: string;
 
   @Column({ type: 'enum', enum: ['Integral', 'Noturno'] })
   turno_curso: 'Integral' | 'Noturno';
 
   @Column()
+  @Length(3, 100)
   cidade_de_origem: string;
-
-  @Column()
-  email: string;
-
-  @Column()
-  telefone: string;
 
   @ManyToMany(() => Tarefa, (tarefa) => tarefa.moradores_associados)
   tarefas: Tarefa[];

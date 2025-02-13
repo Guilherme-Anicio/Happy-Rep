@@ -3,6 +3,7 @@ import { Morador } from '../morador/morador.entity';
 import { Tarefa } from '../tarefa/tarefa.entity';
 import { Evento } from '../evento/evento.entity';
 import { Transacao } from 'src/transacao/transacao.entity';
+import { Usuario } from 'src/usuario/usuario.entity';
 
 export const repositoryProvider = [
   {
@@ -23,6 +24,11 @@ export const repositoryProvider = [
   {
     provide: 'TRANSACAO_REPOSITORY',
     useFactory: (dataSource: DataSource) => dataSource.getRepository(Transacao),
+    inject: ['MYSQL_DATA_SOURCE'],
+  },
+  {
+    provide: 'USUARIO_REPOSITORY',
+    useFactory: (dataSource: DataSource) => dataSource.getRepository(Usuario),
     inject: ['MYSQL_DATA_SOURCE'],
   },
 ];
