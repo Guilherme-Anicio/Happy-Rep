@@ -1,20 +1,22 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { Morador } from 'src/morador/morador.entity';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Morador } from "src/morador/morador.entity";
 
-@Entity('transacao')
+@Entity("transacao")
 export class Transacao {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'enum', enum: ['Deposito', 'Saque'] })
-  tipo: 'Deposito' | 'Saque';
+  @Column({ type: "varchar", length: 10, nullable: false }) // Substitui o enum por varchar
+  tipo: "Deposito" | "Saque"; // Ainda mantemos a tipagem no TypeScript
 
-  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  @Column({ type: "decimal", precision: 10, scale: 2, nullable: false })
   valor: number;
 
-  @Column({ type: 'date' })
+  @Column({ type: "date", nullable: false })
   data: Date;
 
-  @ManyToOne(() => Morador, (morador) => morador.transacoes)
+  @ManyToOne(() => Morador, (morador) => morador.transacoes, {
+    nullable: false,
+  })
   morador: Morador;
 }

@@ -1,21 +1,21 @@
-import { IsEmail, Length, Matches } from 'class-validator';
-import { Morador } from 'src/morador/morador.entity';
-import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { IsEmail, Length, Matches } from "class-validator";
+import { Morador } from "src/morador/morador.entity";
+import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 
-@Entity('usuario')
+@Entity("usuario")
 export class Usuario {
-  @PrimaryGeneratedColumn({ name: 'usuario_id' })
+  @PrimaryGeneratedColumn({ name: "usuario_id" })
   id: number;
 
   @Column({ nullable: false })
   @Matches(/^[A-Za-zÀ-ÖØ-öø-ÿ\s]+$/, {
-    message: 'O nome deve conter apenas letras e espaços.',
+    message: "O nome deve conter apenas letras e espaços.",
   })
   nome: string;
 
   @Column({ nullable: false })
   @Matches(/^[A-Za-zÀ-ÖØ-öø-ÿ\s]+$/, {
-    message: 'O sobrenome deve conter apenas letras e espaços.',
+    message: "O sobrenome deve conter apenas letras e espaços.",
   })
   sobrenome: string;
 
@@ -28,6 +28,10 @@ export class Usuario {
   senha: string;
 
   @Column({ nullable: false, unique: true })
+  @Matches(/^\d{10,11}$/, {
+    message:
+      "Telefone deve conter entre 10 e 11 dígitos numéricos (ex: 11987654321).",
+  })
   telefone: string;
 
   @OneToOne(() => Morador, (morador) => morador.usuario) // Relacionamento 1:1 com Morador

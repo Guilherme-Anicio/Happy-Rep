@@ -6,39 +6,39 @@ import {
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
-} from 'typeorm';
-import { Tarefa } from 'src/tarefa/tarefa.entity';
-import { Evento } from 'src/evento/evento.entity';
-import { Transacao } from 'src/transacao/transacao.entity';
-import { Usuario } from 'src/usuario/usuario.entity';
-import { Length, Matches } from 'class-validator';
+} from "typeorm";
+import { Tarefa } from "src/tarefa/tarefa.entity";
+import { Evento } from "src/evento/evento.entity";
+import { Transacao } from "src/transacao/transacao.entity";
+import { Usuario } from "src/usuario/usuario.entity";
+import { Length, Matches } from "class-validator";
 
-@Entity('morador')
+@Entity("morador")
 export class Morador {
-  @PrimaryGeneratedColumn({ name: 'morador_id' })
+  @PrimaryGeneratedColumn({ name: "morador_id" })
   id: number;
 
-  @OneToOne(() => Usuario)
-  @JoinColumn({ name: 'usuario_id' })
+  @OneToOne(() => Usuario, { nullable: false })
+  @JoinColumn({ name: "usuario_id" })
   usuario: Usuario;
 
-  @Column()
+  @Column({ nullable: false })
   @Length(3, 50)
   apelido: string;
 
-  @Column()
+  @Column({ nullable: false })
   @Matches(/^\d{4}\/\d{1,2}$/, {
     message:
-      'Período deve seguir o formato: 4 números, uma barra (/) e até 2 números (ex: 2024/1).',
+      "Período deve seguir o formato: 4 números, uma barra (/) e até 2 números (ex: 2024/1).",
   })
   periodo: string;
 
-  @Column()
+  @Column({ nullable: false })
   @Length(3, 100)
   curso: string;
 
-  @Column({ type: 'enum', enum: ['Integral', 'Noturno'] })
-  turno_curso: 'Integral' | 'Noturno';
+  @Column({ type: "varchar", length: 8, nullable: false })
+  turno_curso: "Integral" | "Noturno";
 
   @Column()
   @Length(3, 100)
@@ -50,7 +50,7 @@ export class Morador {
   @ManyToMany(() => Evento, (evento) => evento.participantes)
   eventos: Evento[];
 
-  @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
+  @Column({ type: "decimal", precision: 10, scale: 2, default: 0 })
   saldo: number;
 
   @OneToMany(() => Transacao, (transacao) => transacao.morador)

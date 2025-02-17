@@ -1,11 +1,11 @@
-import { Inject, Injectable, BadRequestException } from '@nestjs/common';
-import { Repository } from 'typeorm';
-import { Morador } from 'src/morador/morador.entity';
+import { Inject, Injectable, BadRequestException } from "@nestjs/common";
+import { Repository } from "typeorm";
+import { Morador } from "src/morador/morador.entity";
 
 @Injectable()
 export class MoradorService {
   constructor(
-    @Inject('MORADOR_REPOSITORY')
+    @Inject("MORADOR_REPOSITORY")
     private readonly repository: Repository<Morador>,
   ) {}
 
@@ -18,6 +18,7 @@ export class MoradorService {
   }
 
   async create(morador: Morador): Promise<Morador> {
+    this.validateMorador(morador.turno_curso);
     return this.repository.save(morador);
   }
 
@@ -25,9 +26,10 @@ export class MoradorService {
     const existingMorador = await this.repository.findOneBy({ id });
 
     if (!existingMorador) {
-      throw new BadRequestException('Morador não encontrado.');
+      throw new BadRequestException("Morador não encontrado.");
     }
 
+    this.validateMorador(morador.turno_curso);
     Object.assign(existingMorador, morador);
     return this.repository.save(existingMorador);
   }
@@ -35,7 +37,15 @@ export class MoradorService {
   async delete(id: number): Promise<void> {
     const deleteResult = await this.repository.delete({ id });
     if (!deleteResult.affected) {
-      throw new BadRequestException('Morador não encontrado para exclusão.');
+      throw new BadRequestException("Morador não encontrado para exclusão.");
+    }
+  }
+
+  private validateMorador(turno_curso: string) {
+    if (turno_curso !== "Integral" && turno_curso !== "Noturno") {
+      throw new Error(
+        "Tipo de transação inválido. Use 'Integral' ou 'Noturno'.",
+      );
     }
   }
 }

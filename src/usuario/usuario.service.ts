@@ -1,14 +1,30 @@
-import { Inject, Injectable, BadRequestException } from '@nestjs/common';
-import { Repository } from 'typeorm';
-import { Usuario } from 'src/usuario/usuario.entity';
-import { validateEntity } from 'src/utils/validation.util';
+import { Inject, Injectable, BadRequestException } from "@nestjs/common";
+import { Repository } from "typeorm";
+import { Usuario } from "src/usuario/usuario.entity";
+import { validateEntity } from "src/utils/validation.util";
 
 @Injectable()
 export class UsuarioService {
   constructor(
-    @Inject('USUARIO_REPOSITORY')
+    @Inject("USUARIO_REPOSITORY")
     private readonly repository: Repository<Usuario>,
   ) {}
+
+  async findByEmail(email: string): Promise<Usuario | null> {
+    return this.repository.findOne({ where: { email } });
+  }
+
+  async authenticate(email: string, senha: string): Promise<Usuario> {
+    const usuario = await this.findByEmail(email);
+
+    if (!usuario) {
+      throw new BadRequestException("Email inválido.");
+    } else if (usuario.senha !== senha) {
+      throw new BadRequestException("Senha inválida.");
+    }
+
+    return usuario;
+  }
 
   async getAll(): Promise<Usuario[]> {
     return this.repository.find();
@@ -27,7 +43,7 @@ export class UsuarioService {
     const existingUsuario = await this.repository.findOneBy({ id });
 
     if (!existingUsuario) {
-      throw new BadRequestException('Usuário não encontrado.');
+      throw new BadRequestException("Usuário não encontrado.");
     }
 
     this.validateAndFormatUsuario(usuario);
@@ -39,7 +55,7 @@ export class UsuarioService {
   async delete(id: number): Promise<void> {
     const deleteResult = await this.repository.delete({ id });
     if (!deleteResult.affected) {
-      throw new BadRequestException('Usuário não encontrado para exclusão.');
+      throw new BadRequestException("Usuário não encontrado para exclusão.");
     }
   }
 
@@ -52,11 +68,11 @@ export class UsuarioService {
   }
 
   private validateTelefone(telefone: string): void {
-    const telefoneLimpo = telefone.replace(/\D/g, '');
+    telefone = telefone.replace(/\D/g, "");
 
-    if (telefoneLimpo.length < 10 || telefoneLimpo.length > 11) {
+    if (telefone.length < 10 || telefone.length > 11) {
       throw new BadRequestException(
-        'Telefone deve conter entre 10 e 11 dígitos numéricos (ex: 11987654321).',
+        "Telefone deve conter entre 10 e 11 dígitos numéricos (ex: 11987654321).",
       );
     }
   }

@@ -1,20 +1,16 @@
-import { DataSource } from 'typeorm';
+import { DataSource } from "typeorm";
 
 export const datasourceProvider = [
   {
-    provide: 'MYSQL_DATA_SOURCE',
+    provide: "SQLITE_DATA_SOURCE",
     useFactory: async (): Promise<DataSource> => {
       const datasource: DataSource = new DataSource({
-        type: 'mysql',
-        host: '127.0.0.1',
-        port: 3306,
-        username: 'happyrep_user',
-        password: '123456',
-        database: 'happy_rep',
-        entities: [__dirname + '/../**/*.entity{.ts,.js}'],
-        synchronize: true,
+        type: "sqlite", // Tipo do banco de dados (SQLite)
+        database: "database.sqlite", // Nome do arquivo do banco de dados
+        entities: [__dirname + "/../**/*.entity{.ts,.js}"], // Caminho para as entidades
+        synchronize: true, // Sincroniza o esquema do banco de dados automaticamente
       });
-      return datasource.initialize();
+      return datasource.initialize(); // Inicializa a conexão com o banco de dados
     },
   },
 ];

@@ -1,11 +1,11 @@
-import { Inject, Injectable, BadRequestException } from '@nestjs/common';
-import { Repository } from 'typeorm';
-import { Transacao } from './transacao.entity';
+import { Inject, Injectable, BadRequestException } from "@nestjs/common";
+import { Repository } from "typeorm";
+import { Transacao } from "./transacao.entity";
 
 @Injectable()
 export class TransacaoService {
   constructor(
-    @Inject('TRANSACAO_REPOSITORY')
+    @Inject("TRANSACAO_REPOSITORY")
     private readonly repository: Repository<Transacao>,
   ) {}
 
@@ -18,6 +18,7 @@ export class TransacaoService {
   }
 
   async create(transacao: Transacao): Promise<Transacao> {
+    this.validateTransacao(transacao.tipo);
     return this.repository.save(transacao);
   }
 
@@ -25,8 +26,10 @@ export class TransacaoService {
     const existingTransacao = await this.repository.findOneBy({ id });
 
     if (!existingTransacao) {
-      throw new BadRequestException('Transação não encontrado.');
+      throw new BadRequestException("Transação não encontrado.");
     }
+
+    this.validateTransacao(transacao.tipo);
 
     Object.assign(existingTransacao, transacao);
     return this.repository.save(existingTransacao);
@@ -35,7 +38,13 @@ export class TransacaoService {
   async delete(id: number): Promise<void> {
     const deleteResult = await this.repository.delete({ id });
     if (!deleteResult.affected) {
-      throw new BadRequestException('Transação não encontrado para exclusão.');
+      throw new BadRequestException("Transação não encontrado para exclusão.");
+    }
+  }
+
+  private validateTransacao(tipo: string) {
+    if (tipo !== "Deposito" && tipo !== "Saque") {
+      throw new Error("Tipo de transação inválido. Use 'Deposito' ou 'Saque'.");
     }
   }
 }

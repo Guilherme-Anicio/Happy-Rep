@@ -4,16 +4,16 @@ import {
   ManyToMany,
   PrimaryGeneratedColumn,
   JoinTable,
-} from 'typeorm';
-import { Morador } from 'src/morador/morador.entity';
-import { Length } from 'class-validator';
+} from "typeorm";
+import { Morador } from "src/morador/morador.entity";
+import { Length } from "class-validator";
 
-@Entity('evento')
+@Entity("evento")
 export class Evento {
-  @PrimaryGeneratedColumn({ name: 'evento_id' })
+  @PrimaryGeneratedColumn({ name: "evento_id" })
   id: number;
 
-  @Column()
+  @Column({ nullable: false })
   @Length(3, 100)
   nome: string;
 
@@ -21,13 +21,13 @@ export class Evento {
   @Length(3, 100)
   descricao: string;
 
-  @Column({ name: 'data', type: 'date' })
+  @Column({ name: "data", type: "date", nullable: false })
   data: Date;
 
-  @Column({ name: 'hora', type: 'time' })
+  @Column({ name: "hora", type: "time" })
   hora: string;
 
-  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  @Column({ type: "decimal", precision: 10, scale: 2 })
   valor: number;
 
   @ManyToMany(() => Morador, (morador) => morador.eventos)
