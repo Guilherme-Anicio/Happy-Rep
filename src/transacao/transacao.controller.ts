@@ -6,11 +6,11 @@ import {
   Param,
   Post,
   Put,
-} from '@nestjs/common';
-import { TransacaoService } from './transacao.service';
-import { Transacao } from './transacao.entity';
+} from "@nestjs/common";
+import { TransacaoService } from "./transacao.service";
+import { Transacao } from "./transacao.entity";
 
-@Controller('/transacao')
+@Controller("/transacao")
 export class TransacaoController {
   constructor(private readonly transacaoService: TransacaoService) {}
 
@@ -19,8 +19,8 @@ export class TransacaoController {
     return this.transacaoService.getAll();
   }
 
-  @Get(':id')
-  getTransacao(@Param('id') id: string): Promise<Transacao> {
+  @Get(":id")
+  getTransacao(@Param("id") id: string): Promise<Transacao> {
     return this.transacaoService.get(Number(id));
   }
 
@@ -29,16 +29,16 @@ export class TransacaoController {
     return this.transacaoService.create(transacao);
   }
 
-  @Put(':id')
+  @Put(":id")
   updateTransacao(
-    @Param('id') id: string,
-    @Body() transacao: Transacao,
+    @Param("id") id: string,
+    @Body() transacao: Partial<Transacao>,
   ): Promise<Transacao> {
     return this.transacaoService.update(Number(id), transacao);
   }
 
-  @Delete(':id')
-  deleteTransacao(@Param('id') id: string): Promise<void> {
+  @Delete(":id")
+  deleteTransacao(@Param("id") id: string): Promise<void> {
     return this.transacaoService.delete(Number(id));
   }
 }

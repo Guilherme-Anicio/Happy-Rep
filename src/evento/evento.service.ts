@@ -1,22 +1,22 @@
-import { Inject, Injectable, BadRequestException } from '@nestjs/common';
-import { Repository } from 'typeorm';
-import { Evento } from 'src/evento/evento.entity';
+import { Inject, Injectable, BadRequestException } from "@nestjs/common";
+import { Repository } from "typeorm";
+import { Evento } from "src/evento/evento.entity";
 
 @Injectable()
 export class EventoService {
   constructor(
-    @Inject('EVENTO_REPOSITORY')
+    @Inject("EVENTO_REPOSITORY")
     private readonly repository: Repository<Evento>,
   ) {}
 
   async getAll(): Promise<Evento[]> {
-    return this.repository.find({ relations: ['participantes'] });
+    return this.repository.find({ relations: ["participantes"] });
   }
 
   async get(id: number): Promise<Evento> {
     return this.repository.findOne({
       where: { id },
-      relations: ['participantes'],
+      relations: ["participantes"],
     });
   }
 
@@ -24,11 +24,11 @@ export class EventoService {
     return this.repository.save(evento);
   }
 
-  async update(id: number, evento: Evento): Promise<Evento> {
+  async update(id: number, evento: Partial<Evento>): Promise<Evento> {
     const existingEvento = await this.repository.findOneBy({ id });
 
     if (!existingEvento) {
-      throw new BadRequestException('Evento não encontrado.');
+      throw new BadRequestException("Evento não encontrado.");
     }
 
     Object.assign(existingEvento, evento);
@@ -38,7 +38,7 @@ export class EventoService {
   async delete(id: number): Promise<void> {
     const deleteResult = await this.repository.delete({ id });
     if (!deleteResult.affected) {
-      throw new BadRequestException('Evento não encontrado para exclusão.');
+      throw new BadRequestException("Evento não encontrado para exclusão.");
     }
   }
 }

@@ -1,11 +1,11 @@
-import { Inject, Injectable, BadRequestException } from '@nestjs/common';
-import { Repository } from 'typeorm';
-import { Tarefa } from 'src/tarefa/tarefa.entity';
+import { Inject, Injectable, BadRequestException } from "@nestjs/common";
+import { Repository } from "typeorm";
+import { Tarefa } from "src/tarefa/tarefa.entity";
 
 @Injectable()
 export class TarefaService {
   constructor(
-    @Inject('TAREFA_REPOSITORY')
+    @Inject("TAREFA_REPOSITORY")
     private readonly repository: Repository<Tarefa>,
   ) {}
 
@@ -21,11 +21,11 @@ export class TarefaService {
     return this.repository.save(tarefa);
   }
 
-  async update(id: number, tarefa: Tarefa): Promise<Tarefa> {
+  async update(id: number, tarefa: Partial<Tarefa>): Promise<Tarefa> {
     const existingTarefa = await this.repository.findOneBy({ id });
 
     if (!existingTarefa) {
-      throw new BadRequestException('Tarefa não encontrada.');
+      throw new BadRequestException("Tarefa não encontrada.");
     }
 
     Object.assign(existingTarefa, tarefa);
@@ -35,7 +35,7 @@ export class TarefaService {
   async delete(id: number): Promise<void> {
     const deleteResult = await this.repository.delete({ id });
     if (!deleteResult.affected) {
-      throw new BadRequestException('Tarefa não encontrada para exclusão.');
+      throw new BadRequestException("Tarefa não encontrada para exclusão.");
     }
   }
 }

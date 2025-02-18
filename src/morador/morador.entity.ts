@@ -18,7 +18,7 @@ export class Morador {
   @PrimaryGeneratedColumn({ name: "morador_id" })
   id: number;
 
-  @OneToOne(() => Usuario, { nullable: false })
+  @OneToOne(() => Usuario)
   @JoinColumn({ name: "usuario_id" })
   usuario: Usuario;
 

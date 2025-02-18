@@ -32,7 +32,7 @@ export class MoradorController {
   @Put(":id")
   updateMorador(
     @Param("id") id: string,
-    @Body() morador: Morador,
+    @Body() morador: Partial<Morador>,
   ): Promise<Morador> {
     return this.moradorService.update(Number(id), morador);
   }

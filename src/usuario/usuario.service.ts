@@ -13,10 +13,16 @@ export class UsuarioService {
   ) {}
 
   async findByEmail(email: string): Promise<Usuario | null> {
-    return this.repository.findOne({ where: { email } });
+    return this.repository.findOne({
+      where: { email },
+      relations: ["morador"],
+    });
   }
 
-  async authenticate(email: string, senha: string): Promise<{ token: string }> {
+  async authenticate(
+    email: string,
+    senha: string,
+  ): Promise<{ token: string; user: Partial<Usuario> }> {
     const usuario = await this.findByEmail(email);
 
     if (!usuario) {
@@ -27,16 +33,18 @@ export class UsuarioService {
 
     const payload = { id: usuario.id, email: usuario.email };
     const token = this.jwtService.sign(payload);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { senha: _, ...usuarioSemSenha } = usuario;
 
-    return { token };
+    return { token: token, user: usuarioSemSenha };
   }
 
   async getAll(): Promise<Usuario[]> {
-    return this.repository.find();
+    return this.repository.find({ relations: ["morador"] });
   }
 
   async get(id: number): Promise<Usuario> {
-    return this.repository.findOneBy({ id });
+    return this.repository.findOne({ where: { id }, relations: ["morador"] });
   }
 
   async create(usuario: Usuario): Promise<Usuario> {
@@ -44,7 +52,7 @@ export class UsuarioService {
     return this.repository.save(usuario);
   }
 
-  async update(id: number, usuario: Usuario): Promise<Usuario> {
+  async update(id: number, usuario: Partial<Usuario>): Promise<Usuario> {
     const existingUsuario = await this.repository.findOneBy({ id });
 
     if (!existingUsuario) {
@@ -64,7 +72,7 @@ export class UsuarioService {
     }
   }
 
-  private validateAndFormatUsuario(usuario: Usuario): void {
+  private validateAndFormatUsuario(usuario: Partial<Usuario>): void {
     const moradorValidators: Record<string, (value: any) => void> = {
       telefone: this.validateTelefone.bind(this),
     };

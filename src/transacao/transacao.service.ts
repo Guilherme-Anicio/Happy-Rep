@@ -22,7 +22,7 @@ export class TransacaoService {
     return this.repository.save(transacao);
   }
 
-  async update(id: number, transacao: Transacao): Promise<Transacao> {
+  async update(id: number, transacao: Partial<Transacao>): Promise<Transacao> {
     const existingTransacao = await this.repository.findOneBy({ id });
 
     if (!existingTransacao) {

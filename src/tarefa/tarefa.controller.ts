@@ -32,7 +32,7 @@ export class TarefaController {
   @Put(":id")
   updateTarefa(
     @Param("id") id: string,
-    @Body() tarefa: Tarefa,
+    @Body() tarefa: Partial<Tarefa>,
   ): Promise<Tarefa> {
     return this.tarefaService.update(Number(id), tarefa);
   }

@@ -37,7 +37,7 @@ export class UsuarioController {
   @Put(":id")
   updateUsuario(
     @Param("id") id: string,
-    @Body() usuario: Usuario,
+    @Body() usuario: Partial<Usuario>,
   ): Promise<Usuario> {
     return this.usuarioService.update(Number(id), usuario);
   }

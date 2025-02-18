@@ -6,11 +6,11 @@ import {
   Param,
   Post,
   Put,
-} from '@nestjs/common';
-import { EventoService } from './evento.service';
-import { Evento } from './evento.entity';
+} from "@nestjs/common";
+import { EventoService } from "./evento.service";
+import { Evento } from "./evento.entity";
 
-@Controller('/evento')
+@Controller("/evento")
 export class EventoController {
   constructor(private readonly eventoService: EventoService) {}
 
@@ -19,8 +19,8 @@ export class EventoController {
     return this.eventoService.getAll();
   }
 
-  @Get(':id')
-  getEvento(@Param('id') id: string): Promise<Evento> {
+  @Get(":id")
+  getEvento(@Param("id") id: string): Promise<Evento> {
     return this.eventoService.get(Number(id));
   }
 
@@ -29,16 +29,16 @@ export class EventoController {
     return this.eventoService.create(evento);
   }
 
-  @Put(':id')
+  @Put(":id")
   updateEvento(
-    @Param('id') id: string,
-    @Body() evento: Evento,
+    @Param("id") id: string,
+    @Body() evento: Partial<Evento>,
   ): Promise<Evento> {
     return this.eventoService.update(Number(id), evento);
   }
 
-  @Delete(':id')
-  deleteEvento(@Param('id') id: string): Promise<void> {
+  @Delete(":id")
+  deleteEvento(@Param("id") id: string): Promise<void> {
     return this.eventoService.delete(Number(id));
   }
 }

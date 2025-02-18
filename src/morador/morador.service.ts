@@ -22,7 +22,7 @@ export class MoradorService {
     return this.repository.save(morador);
   }
 
-  async update(id: number, morador: Morador): Promise<Morador> {
+  async update(id: number, morador: Partial<Morador>): Promise<Morador> {
     const existingMorador = await this.repository.findOneBy({ id });
 
     if (!existingMorador) {
