@@ -26,6 +26,9 @@ export class Morador {
   @Length(3, 50)
   apelido: string;
 
+  @Column({ type: "varchar", length: 15, default: "Calouro" })
+  cargo: "Calouro" | "Veterano" | "Vice-Presidente" | "Presidente";
+
   @Column({ nullable: false })
   @Matches(/^\d{4}\/\d{1,2}$/, {
     message:
@@ -43,6 +46,9 @@ export class Morador {
   @Column()
   @Length(3, 100)
   cidade_de_origem: string;
+
+  @Column({ default: 0 })
+  trotes: number;
 
   @ManyToMany(() => Tarefa, (tarefa) => tarefa.moradores_associados)
   tarefas: Tarefa[];

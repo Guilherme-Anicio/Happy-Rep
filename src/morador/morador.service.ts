@@ -18,7 +18,7 @@ export class MoradorService {
   }
 
   async create(morador: Morador): Promise<Morador> {
-    this.validateMorador(morador.turno_curso);
+    this.validateMorador(morador.turno_curso, morador.cargo);
     return this.repository.save(morador);
   }
 
@@ -29,7 +29,7 @@ export class MoradorService {
       throw new BadRequestException("Morador não encontrado.");
     }
 
-    this.validateMorador(morador.turno_curso);
+    this.validateMorador(morador.turno_curso, morador.cargo);
     Object.assign(existingMorador, morador);
     return this.repository.save(existingMorador);
   }
@@ -41,10 +41,21 @@ export class MoradorService {
     }
   }
 
-  private validateMorador(turno_curso: string) {
+  private validateMorador(turno_curso: string, cargo: string) {
     if (turno_curso !== "Integral" && turno_curso !== "Noturno") {
       throw new Error(
         "Tipo de transação inválido. Use 'Integral' ou 'Noturno'.",
+      );
+    }
+
+    if (
+      cargo !== "Calouro" &&
+      cargo !== "Veterano" &&
+      cargo !== "Vice-Presidente" &&
+      cargo !== "Presidente"
+    ) {
+      throw new Error(
+        "Tipo de transação inválido. Use 'Calouro', 'Veterano', 'VIce-Presidente' ou 'Presidente'.",
       );
     }
   }

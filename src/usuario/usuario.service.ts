@@ -1,5 +1,6 @@
 import { Inject, Injectable, BadRequestException } from "@nestjs/common";
 import { Repository } from "typeorm";
+import { JwtService } from "@nestjs/jwt";
 import { Usuario } from "src/usuario/usuario.entity";
 import { validateEntity } from "src/utils/validation.util";
 
@@ -8,13 +9,14 @@ export class UsuarioService {
   constructor(
     @Inject("USUARIO_REPOSITORY")
     private readonly repository: Repository<Usuario>,
+    private readonly jwtService: JwtService,
   ) {}
 
   async findByEmail(email: string): Promise<Usuario | null> {
     return this.repository.findOne({ where: { email } });
   }
 
-  async authenticate(email: string, senha: string): Promise<Usuario> {
+  async authenticate(email: string, senha: string): Promise<{ token: string }> {
     const usuario = await this.findByEmail(email);
 
     if (!usuario) {
@@ -23,7 +25,10 @@ export class UsuarioService {
       throw new BadRequestException("Senha inválida.");
     }
 
-    return usuario;
+    const payload = { id: usuario.id, email: usuario.email };
+    const token = this.jwtService.sign(payload);
+
+    return { token };
   }
 
   async getAll(): Promise<Usuario[]> {
