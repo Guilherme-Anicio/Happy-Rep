@@ -25,7 +25,7 @@ export class TarefaController {
   }
 
   @Post()
-  createTarefa(@Body() tarefa: Tarefa): Promise<Tarefa> {
+  createTarefa(@Body() tarefa: Partial<Tarefa>): Promise<Tarefa> {
     return this.tarefaService.create(tarefa);
   }
 
